@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}— {{ purchase.product.name }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-secondary mb-3">
+  <i class="bi bi-arrow-left"></i> My Products
+</a>
+
+<div class="row g-4">
+
+  <!-- Product info -->
+  <div class="col-12">
+    <div class="card p-4">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h4 class="fw-bold mb-1">{{ purchase.product.name }}</h4>
+          <span class="text-muted">SKU: {{ purchase.product.sku }}</span>
+          {% if purchase.serial_no %}
+            &nbsp;·&nbsp;<span class="text-muted">S/N: {{ purchase.serial_no }}</span>
+          {% endif %}
+        </div>
+        <i class="bi bi-box-seam fs-2 text-primary"></i>
+      </div>
+      {% if purchase.product.description %}
+        <p class="mt-3 mb-0 text-muted">{{ purchase.product.description }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Replacement requests -->
+  <div class="col-md-6">
+    <div class="card p-4 h-100">
+      <h6 class="fw-bold mb-3"><i class="bi bi-arrow-repeat"></i> Replacement Requests</h6>
+
+      {% if purchase.replacements %}
+        <ul class="list-group list-group-flush mb-3">
+          {% for r in purchase.replacements %}
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between">
+              <span class="small">{{ r.reason[:80] }}{% if r.reason|length > 80 %}…{% endif %}</span>
+              <span class="badge badge-{{ r.status }} ms-2">{{ r.status }}</span>
+            </div>
+            <span class="text-muted" style="font-size:0.75rem">{{ r.created_at.strftime('%d %b %Y') }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted small">No requests yet.</p>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('request_replacement', purchase_id=purchase.id) }}" class="mt-auto">
+        <div class="mb-2">
+          <textarea name="reason" class="form-control form-control-sm" rows="2"
+                    placeholder="Describe the issue…" required></textarea>
+        </div>
+        <button class="btn btn-sm btn-warning">Request Replacement</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Authorized users -->
+  <div class="col-md-6">
+    <div class="card p-4 h-100">
+      <h6 class="fw-bold mb-3"><i class="bi bi-people"></i> Authorized Users</h6>
+
+      {% if purchase.authorized %}
+        <ul class="list-group list-group-flush mb-3">
+          {% for au in purchase.authorized %}
+          <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold small">{{ au.name }}</div>
+              <div class="text-muted" style="font-size:0.75rem">{{ au.email }}</div>
+            </div>
+            <form method="POST" action="{{ url_for('remove_authorized_user', purchase_id=purchase.id, auth_id=au.id) }}">
+              <button class="btn btn-sm btn-outline-danger py-0 px-2" title="Remove">
+                <i class="bi bi-x"></i>
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted small">No authorized users added yet.</p>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('add_authorized_user', purchase_id=purchase.id) }}" class="mt-auto">
+        <div class="mb-2">
+          <input type="text" name="name" class="form-control form-control-sm mb-1" placeholder="Full name" required>
+          <input type="email" name="email" class="form-control form-control-sm" placeholder="Email address" required>
+        </div>
+        <button class="btn btn-sm btn-primary">Add Authorized User</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}— Assign Product{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-4">Assign Product to Customer</h4>
+
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card p-4">
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Customer</label>
+          <select name="user_id" class="form-select" required>
+            <option value="">Select customer…</option>
+            {% for u in users %}
+            <option value="{{ u.id }}">{{ u.full_name }} ({{ u.email }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Product</label>
+          <select name="product_id" class="form-select" required>
+            <option value="">Select product…</option>
+            {% for p in products %}
+            <option value="{{ p.id }}">{{ p.name }} — {{ p.sku }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Serial Number <span class="text-muted fw-normal">(optional)</span></label>
+          <input type="text" name="serial_no" class="form-control" placeholder="e.g. SN-10042">
+        </div>
+        <button class="btn btn-primary w-100">Assign Product</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

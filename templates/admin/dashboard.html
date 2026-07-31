@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}— Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">Admin Dashboard</h4>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card p-3 text-center">
+      <div class="fs-2 fw-bold text-primary">{{ users|length }}</div>
+      <div class="text-muted small">Customers</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <a href="{{ url_for('admin_replacements') }}" class="text-decoration-none">
+      <div class="card p-3 text-center {% if pending %}border-warning{% endif %}">
+        <div class="fs-2 fw-bold text-warning">{{ pending }}</div>
+        <div class="text-muted small">Pending Replacements</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <a href="{{ url_for('admin_replacements') }}" class="text-decoration-none">
+      <div class="card p-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-arrow-repeat fs-2 text-warning"></i>
+          <div>
+            <div class="fw-bold">Replacement Requests</div>
+            <div class="text-muted small">Review and approve customer requests</div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="{{ url_for('admin_products') }}" class="text-decoration-none">
+      <div class="card p-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-box-seam fs-2 text-primary"></i>
+          <div>
+            <div class="fw-bold">Manage Products</div>
+            <div class="text-muted small">Add and view product catalogue</div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="{{ url_for('admin_assign') }}" class="text-decoration-none">
+      <div class="card p-4 h-100">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-person-check fs-2 text-success"></i>
+          <div>
+            <div class="fw-bold">Assign Product</div>
+            <div class="text-muted small">Register a purchase to a customer</div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="card p-4">
+  <h6 class="fw-bold mb-3">Customers</h6>
+  <table class="table table-sm table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th><th>Email</th><th>Registered</th><th>Products</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.full_name }}</td>
+        <td class="text-muted">{{ u.email }}</td>
+        <td class="text-muted">{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td>{{ u.purchases|length }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-muted">No customers yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
