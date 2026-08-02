@@ -3,10 +3,10 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Product, Purchase, ReplacementRequest, AuthorizedUser
 from datetime import datetime
-import os
+import os, secrets
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "dev-secret-change-in-production"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///customerpilot.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
